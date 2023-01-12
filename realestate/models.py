@@ -28,7 +28,7 @@ class Annonce(models.Model):
     description = models.TextField()
     prix = models.FloatField(max_length=30)
     annonceur = models.ForeignKey(
-        User, on_delete=models.CASCADE)  # on tire d'ici le contact
+        User, on_delete=models.CASCADE,)  # on tire d'ici le contact
     wilaya = models.CharField(max_length=25)
     commune = models.CharField(max_length=25)
     addresse = models.CharField(max_length=40)
@@ -40,21 +40,21 @@ class Annonce(models.Model):
 
 class Photo(models.Model):  # table qui contient touttes les photos
     annonce = models.ForeignKey(
-        Annonce, on_delete=models.CASCADE, related_name='photos')
-    photo = models.ImageField(upload_to='annonces/')
+        Annonce, on_delete=models.CASCADE)
+    photo = models.ImageField(upload_to='annonces/', editable=True)
 
 
 class Offre(models.Model):
     utilisateur = models.ForeignKey(
         User, on_delete=models.CASCADE)
     annonce = models.ForeignKey(
-        Annonce, on_delete=models.CASCADE, related_name='offres')
+        Annonce, on_delete=models.CASCADE)
     contenu = models.TextField()
 
 
 class Contact(models.Model):
     # Email, prenom et nom sont dans "utilisateur"
     utilisateur = models.OneToOneField(
-        User, on_delete=models.CASCADE, related_name='contact')
+        User, on_delete=models.CASCADE)
     addresse = models.CharField(max_length=50)
     telephone = models.CharField(max_length=15)

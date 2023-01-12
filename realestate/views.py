@@ -1,7 +1,7 @@
 from gc import get_objects
 from django.contrib.auth.models import User, Group
 
-from .other import post_object, put_object, get_objects, delete_object
+from .utils import post_object, put_object, get_objects, delete_object
 from .models import Annonce, Offre, Photo, Contact
 from rest_framework import viewsets
 from rest_framework import permissions

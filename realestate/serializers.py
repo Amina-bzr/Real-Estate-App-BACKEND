@@ -41,17 +41,12 @@ class PhotoSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class AnnonceSerializer(serializers.HyperlinkedModelSerializer):
-    ''' annonceur = serializers.ReadOnlyField(source='annonceur.username')
+    annonceur = serializers.CharField(
+        source='annonceur.username', required=False)
     offres = serializers.HyperlinkedRelatedField(
         many=True, view_name='offre-detail', read_only=True)
     photos = serializers.HyperlinkedRelatedField(
         many=True, view_name='photo-detail', read_only=True)
-    offres = serializers.HyperlinkedRelatedField(
-        many=True, view_name='offre-detail', read_only=True) '''
-
-    offres = OffreSerializer(many=True, read_only=True)
-    photos = PhotoSerializer(many=True)
-    annonceur = UserSerializer(read_only=True)
 
     class Meta:
         model = Annonce

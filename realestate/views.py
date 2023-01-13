@@ -1,10 +1,9 @@
 from gc import get_objects
 from django.contrib.auth.models import User, Group
 
-from .utils import post_object, put_object, get_objects, delete_object
+from .utils import post_object, put_object, get_objects, delete_object, get_annonces, get_users
 from .models import Annonce, Offre, Photo, Contact
-from rest_framework import viewsets
-from rest_framework import permissions
+
 from .serializers import UserSerializer, AnnonceSerializer, OffreSerializer, ContactSerializer, PhotoSerializer, GroupSerializer
 
 
@@ -75,10 +74,10 @@ def Annonce_list(request):
     """
 
     if request.method == 'GET':
-        return get_objects(request, AnnonceSerializer, Annonce)
+        return get_annonces(request, AnnonceSerializer, Annonce)
 
     elif request.method == 'POST':
-        return post_object(request, AnnonceSerializer)
+        return post_object(request, AnnonceSerializer, 'annonceur')
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -114,7 +113,7 @@ def Offre_list(request):
         return get_objects(request, OffreSerializer, Offre)
 
     elif request.method == 'POST':
-        return post_object(request, OffreSerializer)
+        return post_object(request, OffreSerializer, 'utilisateur')
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])
@@ -183,10 +182,10 @@ def User_list(request):
     """
 
     if request.method == 'GET':
-        return get_objects(request, UserSerializer, User)
+        return get_users(request, UserSerializer, User)
 
     elif request.method == 'POST':
-        return post_object(request, UserSerializer)
+        return post_object(request, UserSerializer, None)
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])
@@ -215,14 +214,14 @@ def User_detail(request, pk):
 @permission_classes([IsAuthenticated])
 def Contact_list(request):
     """
-    recuperer la liste des Contacts, ou ajouter une Contact.
+    recuperer la liste des Contacts, ou ajouter un Contact.
     """
 
     if request.method == 'GET':
         return get_objects(request, ContactSerializer, Contact)
 
     elif request.method == 'POST':
-        return post_object(request, ContactSerializer)
+        return post_object(request, ContactSerializer, 'utilisateur')
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])

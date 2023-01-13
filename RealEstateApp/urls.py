@@ -19,11 +19,12 @@ from django.urls import include
 from django.urls import include, path
 from rest_framework import routers
 from realestate import views
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('', include('realestate.urls'), name="api"),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

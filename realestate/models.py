@@ -32,7 +32,7 @@ class Annonce(models.Model):
     wilaya = models.CharField(max_length=25)
     commune = models.CharField(max_length=25)
     addresse = models.CharField(max_length=40)
-    date_pub = models.DateTimeField(auto_now_add=True)
+    date_pub = models.DateField(auto_now_add=True)
 
     class Meta:
         ordering = ['-date_pub']

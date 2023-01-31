@@ -1,64 +1,13 @@
+from django.http import JsonResponse
+from django.utils.crypto import get_random_string
+from rest_framework import authentication
+from django.contrib.auth.models import User
 from gc import get_objects
 from django.contrib.auth.models import User, Group
-
+from rest_framework.authtoken.models import Token
 from .utils import post_object, put_object, get_objects, delete_object, get_annonces, get_users
 from .models import Annonce, Offre, Photo, Contact
-
 from .serializers import UserSerializer, AnnonceSerializer, OffreSerializer, ContactSerializer, PhotoSerializer, GroupSerializer
-
-
-''' class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class AnnonceViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Annonce.objects.all()
-    serializer_class = AnnonceSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class OffreViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Offre.objects.all()
-    serializer_class = OffreSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class ContactViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Contact.objects.all()
-    serializer_class = ContactSerializer
-    permission_classes = [permissions.IsAuthenticated]
-
-
-class PhotoViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = Photo.objects.all()
-    serializer_class = PhotoSerializer
-    permission_classes = [permissions.IsAuthenticated] '''
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
@@ -77,7 +26,7 @@ def Annonce_list(request):
         return get_annonces(request, AnnonceSerializer, Annonce)
 
     elif request.method == 'POST':
-        return post_object(request, AnnonceSerializer, 'annonceur')
+        return post_object(request, AnnonceSerializer, 'utilisateur')
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
@@ -175,7 +124,7 @@ def Photo_detail(request, pk):
 
 
 @ api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def User_list(request):
     """
     recuperer la liste des Users, ou ajouter une User.
@@ -189,7 +138,7 @@ def User_list(request):
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def User_detail(request, pk):
     """
     recuperer, modifier ou supprimer une User.
@@ -210,8 +159,26 @@ def User_detail(request, pk):
         return delete_object(request, user)
 
 
+@ api_view(['POST'])
+def Google_login(request):
+    try:
+        user = User.objects.get(email=request.data['email'])
+        token = Token.objects.get(user=user).key
+    except User.DoesNotExist:
+        # create user
+        username = request.data['name']
+        email = request.data['email']
+        given_name = request.data['given_name']
+        family_name = request.data['family_name']
+        user = User.objects.create_user(
+            username=username, email=email, first_name=given_name, last_name=family_name)
+        token = Token.objects.create(user=user).key
+        # send token
+    return JsonResponse({'token': token})
+
+
 @ api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+# @permission_classes([IsAuthenticated])
 def Contact_list(request):
     """
     recuperer la liste des Contacts, ou ajouter un Contact.
@@ -246,6 +213,7 @@ def Contact_detail(request, pk):
         return delete_object(request, contact)
 
 
+# may be deleted later
 @ api_view(['GET', 'POST'])
 @permission_classes([IsAdminUser])
 def Group_list(request):

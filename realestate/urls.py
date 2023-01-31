@@ -19,4 +19,8 @@ urlpatterns = [
 
     path('photos/', views.Photo_list, name="photo-list"),
     path('photos/<int:pk>/', views.Photo_detail, name="photo-detail"),
+
+    path('token-auth/', views.Google_login, name="google-login")
+
+
 ]

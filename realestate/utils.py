@@ -6,8 +6,8 @@ from django_filters.utils import translate_validation
 
 
 def put_object(request, serializer, object):
-    if request.user == (object or object.annonceur or object.utilisateur or object.annonce.annonceur):
-        serializer = serializer(object, data=request.data,
+    if request.user == (object or object.utilisateur or object.annonce.utilisateur):
+        serializer = serializer(object, data=request.data, partial=True,
                                 context={'request': request})
         if serializer.is_valid():
             serializer.save()
@@ -26,6 +26,7 @@ def post_object(request, serializer, utilisateur):
         if utilisateur != None:
             # dans le case de annonce, offre et contact (on retire l'utilisateur qui a creé l'objet depuis l'objet request)
             serializer.save(utilisateur=request.user)
+
         else:
             serializer.save()  # pour Photo pas d'attribut utilisateur associé
 
@@ -62,7 +63,7 @@ def get_objects(request, serializer, model):
 
 
 def delete_object(request, object):
-    if request.user == (object.annonceur or object.annonce.annonceur or object.utilisateur) or request.user.is_superuser:
+    if request.user == (object.utilisateur or object.annonce.utilisateur) or request.user.is_superuser:
         object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     return Response(status=status.HTTP_403_FORBIDDEN)

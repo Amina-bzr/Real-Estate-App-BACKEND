@@ -15,6 +15,8 @@ choix_categorie = [
     (location_vac, 'Location pour vacances'),
 ]
 
+# {"categorie":"Vente", "type": "villa", "surface":12.000, "description":"hhh", "prix":123566, "wilaya":"alger","commune":"hydra","addresse":"jhjhkl12356"}
+
 
 class Annonce(models.Model):
     # le champ id est generé automatiquement par Django
@@ -27,7 +29,7 @@ class Annonce(models.Model):
     surface = models.FloatField(max_length=30)
     description = models.TextField()
     prix = models.FloatField(max_length=30)
-    annonceur = models.ForeignKey(
+    utilisateur = models.ForeignKey(
         User, on_delete=models.CASCADE,)  # on tire d'ici le contact
     wilaya = models.CharField(max_length=25)
     commune = models.CharField(max_length=25)
@@ -40,7 +42,7 @@ class Annonce(models.Model):
 
 class Photo(models.Model):  # table qui contient touttes les photos
     annonce = models.ForeignKey(
-        Annonce, on_delete=models.CASCADE)
+        Annonce, on_delete=models.CASCADE, related_name="photos")
     photo = models.ImageField(upload_to='annonces/', editable=True)
 
 
@@ -48,7 +50,7 @@ class Offre(models.Model):
     utilisateur = models.ForeignKey(
         User, on_delete=models.CASCADE)
     annonce = models.ForeignKey(
-        Annonce, on_delete=models.CASCADE)
+        Annonce, on_delete=models.CASCADE, related_name='offres')
     contenu = models.TextField()
 
 

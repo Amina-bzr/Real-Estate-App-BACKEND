@@ -63,7 +63,7 @@ def get_objects(request, serializer, model):
 
 
 def delete_object(request, object):
-    if request.user == (object.utilisateur or object.annonce.utilisateur) or request.user.is_superuser:
+    if request.user.is_superuser or request.user == (object.utilisateur or object.annonce.utilisateur):
         object.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
     return Response(status=status.HTTP_403_FORBIDDEN)

@@ -35,8 +35,8 @@ class Annonce(models.Model):
     Prix = models.FloatField(max_length=30)
     utilisateur = models.ForeignKey(
         User, on_delete=models.CASCADE,)  # on tire d'ici le contact
-    Wilaya = models.CharField(max_length=25, default="tizi")
-    Commune = models.CharField(max_length=25, default="tizi")
+    Wilaya = models.CharField(max_length=25, default="Alger")
+    Commune = models.CharField(max_length=25, default="Alger")
     Addresse = models.CharField(max_length=40)
     date_pub = models.DateField(auto_now_add=True)
 
@@ -62,5 +62,6 @@ class Contact(models.Model):
     # Email, prenom et nom sont dans "utilisateur"
     utilisateur = models.OneToOneField(
         User, on_delete=models.CASCADE)
+    picture = models.ImageField(upload_to='userPhotos/', editable=True, null=True)
     addresse = models.CharField(max_length=50)
     telephone = models.CharField(max_length=15)

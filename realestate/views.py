@@ -167,11 +167,13 @@ def Google_login(request):
         # create user
         username = request.data['name']
         email = request.data['email']
+        profilePic= request.data['picture']
         given_name = request.data['given_name']
         family_name = request.data['family_name']
         user = User.objects.create_user(
             username=username, email=email, first_name=given_name, last_name=family_name)
         token = Token.objects.create(user=user).key
+        contact = Contact.objects.create(utilisateur=user, picture=profilePic)
         # send token
     return JsonResponse({'token': token})
 

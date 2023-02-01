@@ -30,9 +30,9 @@ MEDIA_URL = '/media/'
 SECRET_KEY = 'django-insecure-9677pua#r&(q564*ous1q1qesgth^@(202ky^p*40)^fao0_s6'
 APPEND_SLASH = True
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['annoncesimmobilieres.pythonanywhere.com']
 
 
 # Application definition

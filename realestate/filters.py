@@ -11,7 +11,7 @@ class AnnonceFilter(rest_framework.FilterSet):
 
     class Meta:
         model = Annonce
-        fields = ['Type', 'Wilaya', 'Commune', 'titre']
+        fields = ['Type','utilisateur' ,'Wilaya', 'Commune', 'titre']
 
 
 class UserFilter(rest_framework.FilterSet):

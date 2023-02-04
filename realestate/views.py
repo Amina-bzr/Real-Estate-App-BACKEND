@@ -1,3 +1,6 @@
+from io import BytesIO
+import requests
+from django.core.files.uploadedfile import UploadedFile
 from django.http import JsonResponse
 from django.utils.crypto import get_random_string
 from rest_framework import authentication
@@ -15,7 +18,7 @@ from rest_framework.response import Response
 
 
 @api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Annonce_list(request):
     """
     recuperer la liste des annonces, ou ajouter une annonce.
@@ -29,7 +32,7 @@ def Annonce_list(request):
 
 
 @api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Annonce_detail(request, pk):
     """
     recuperer, modifier ou supprimer une annonce.
@@ -51,7 +54,7 @@ def Annonce_detail(request, pk):
 
 
 @ api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Offre_list(request):
     """
     recuperer la liste des Offres, ou ajouter une Offre.
@@ -64,8 +67,8 @@ def Offre_list(request):
         return post_object(request, OffreSerializer, 'utilisateur')
 
 
-@ api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+@ api_view(['GET', 'DELETE'])
+#@permission_classes([IsAuthenticated])
 def Offre_detail(request, pk):
     """
     recuperer, modifier ou supprimer une Offre.
@@ -87,7 +90,7 @@ def Offre_detail(request, pk):
 
 
 @ api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Photo_list(request):
     """
     recuperer la liste des Photos, ou ajouter une Photo.
@@ -97,11 +100,11 @@ def Photo_list(request):
         return get_objects(request, PhotoSerializer, Photo)
 
     elif request.method == 'POST':
-        return post_object(request, PhotoSerializer)
+        return post_object(request, PhotoSerializer, None)
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Photo_detail(request, pk):
     """
     recuperer, modifier ou supprimer une Photo.
@@ -123,7 +126,7 @@ def Photo_detail(request, pk):
 
 
 @ api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def User_list(request):
     """
     recuperer la liste des Utilisateurs, ou ajouter un Utilisateur.
@@ -137,7 +140,7 @@ def User_list(request):
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def User_detail(request, pk):
     """
     recuperer, modifier ou supprimer une User.
@@ -161,25 +164,35 @@ def User_detail(request, pk):
 @ api_view(['POST'])
 def Google_login(request):
     try:
-        user = User.objects.get(email=request.data['email'])
+        user = User.objects.get(email=(request.data['userObject'])['email'])
         token = Token.objects.get(user=user).key
     except User.DoesNotExist:
         # create user
-        username = request.data['name']
-        email = request.data['email']
-        profilePic= request.data['picture']
-        given_name = request.data['given_name']
-        family_name = request.data['family_name']
+        print(type(request.data))
+        print(request.data)
+        username = (request.data['userObject'])['name']
+        email = (request.data['userObject'])['email']
+        profilePic = (request.data['userObject'])['picture']
+        given_name = (request.data['userObject'])['given_name']
+        family_name = (request.data['userObject'])['family_name']
         user = User.objects.create_user(
             username=username, email=email, first_name=given_name, last_name=family_name)
         token = Token.objects.create(user=user).key
+        # create contact object
+
+        # telecharger l'image de l'url
+        response = requests.get(profilePic)
+        # creeation d'un fichier binaire contenant l'image
+        profilePic = UploadedFile(
+            BytesIO(response.content), name='profilePic.jpg')
+
         contact = Contact.objects.create(utilisateur=user, picture=profilePic)
         # send token
     return JsonResponse({'token': token})
 
 
 @ api_view(['GET', 'POST'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Contact_list(request):
     """
     recuperer la liste des Contacts, ou ajouter un Contact.
@@ -193,7 +206,7 @@ def Contact_list(request):
 
 
 @ api_view(['GET', 'PUT', 'DELETE'])
-@permission_classes([IsAuthenticated])
+#@permission_classes([IsAuthenticated])
 def Contact_detail(request, pk):
     """
     recuperer, modifier ou supprimer un Contact.

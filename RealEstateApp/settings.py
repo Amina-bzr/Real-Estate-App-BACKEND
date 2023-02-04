@@ -18,7 +18,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # Actual directory user files go to
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
+MEDIA_ROOT = '/home/annoncesimmobilieres/api-realestate-app/media'
 
 # URL used to access the media
 MEDIA_URL = '/media/'
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_filters',
     'rest_framework.authtoken',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [

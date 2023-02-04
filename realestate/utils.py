@@ -6,7 +6,7 @@ from django_filters.utils import translate_validation
 
 
 def put_object(request, serializer, object):
-    if request.user == (object or object.utilisateur or object.annonce.utilisateur):
+    if ((request.user == object) or (request.user ==object.utilisateur)):
         serializer = serializer(object, data=request.data, partial=True,
                                 context={'request': request})
         if serializer.is_valid():

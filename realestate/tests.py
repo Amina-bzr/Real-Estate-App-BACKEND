@@ -59,7 +59,22 @@ class OffreTests(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 #test selenium
-class PlayerFormTest(LiveServerTestCase):
+class OffreTests(APITestCase):
+    url = reverse('offre-list')
+
+    def setUp(self):
+        self.user = User.objects.create_user(
+            username='test', password='test')
+        self.token = Token.objects.create(user=self.user)
+        self.client.credentials(HTTP_AUTHORIZATION='Token ' + self.token.key)
+
+    # test de la recuperation des offres
+    def test_get_Offres(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class AnnonceFormTest(LiveServerTestCase):
 
     def testform(self):
         driver = webdriver.Chrome()
@@ -86,22 +101,25 @@ class PlayerFormTest(LiveServerTestCase):
         next_button = driver.find_element(By.ID, "identifierNext")
         next_button.click()
         time.sleep(3)
-        password_field = driver.find_element(By.TAG_NAME, "input")
+        password_field = driver.switch_to.active_element
         password_field.send_keys("appart1234")
 
         signin_button = driver.find_element(By.ID, "passwordNext")
         signin_button.click()
-        time.sleep(3)
+
+        #revenir à la fenetre principale
+        time.sleep(2)
         driver.switch_to.window(main_page)
-        # publier
-        time.sleep(10)
-        ''' btns_compte = driver.find_element(
-            By.CLASS_NAME, "fFW7wc-ibnC6b-sM5MNb TAKBxb")
-        btns_compte[0].click() '''
+        
+        
+        # aller à la page "publier"
+        time.sleep(5)
 
         publier_btn = driver.find_element(By.ID, "publier")
         publier_btn.click()
 
+
+        #remplir le formulaire
         time.sleep(5)
         input_field = driver.find_element(By.ID, "titre")
         input_field.send_keys("nouvelle annonce")
